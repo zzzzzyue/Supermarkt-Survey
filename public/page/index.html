@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Survey</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="../css/add/index.css">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        .alert {
+            flex-direction: column;
+            width: 120px !important;
+            padding: 10px 0 !important;
+            height: auto !important;
+        }
+
+        .alert li {
+            border-bottom: 1px solid #f4f4f4;
+        }
+
+        #box .act {
+            background-color: #e18b8b !important;
+            color: #fff !important;
+        }
+
+        .layui-container {
+            padding: 20px 0;
+        }
+
+        .container {
+            padding: 20px 0 !important;
+            justify-content: center;
+        }
+
+        .layui-elem-quote {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .layui-layer-rim {
+            border-radius: 0 !important;
+            border: none !important;
+        }
+
+        .layui-form {
+            padding: 20px !important;
+        }
+
+        .flex_right {
+            position: fixed;
+            top: 40%;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .flex_right button {
+            width: 70px;
+            height: 50px;
+            border: none;
+            background: #009688;
+            color: #fff;
+            cursor: pointer;
+            /* text */
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="layui-container">
+        <div class="userInfo" id="userInfo">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Name:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="username" lay-verify="required" placeholder="Please enter your name"
+                            autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Age</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="age" lay-verify="required" placeholder="Please enter your age"
+                            autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Sex:</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="sex" value="Male" title="Male" checked="">
+                        <input type="radio" name="sex" value="Female" title="Female">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <!-- <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">Submit</button> -->
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="addInfo">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <blockquote class="layui-elem-quote">
+            <p>data protection</p> <span class="login">Please enter your information</span>
+        </blockquote>
+        <div class="container ">
+            <div class="contnet">
+                <div id="box">
+                </div>
+            </div>
+        </div>
+        <div class="userInfo" id="userInfo" style="display: none;">
+            <form class="layui-form" action="" lay-filter="example">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Name:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="username" lay-verify="required" placeholder="Please enter your name"
+                            autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Age</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="age" lay-verify="required" placeholder="Please enter your age"
+                            autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Sex:</label>
+                    <div class="layui-input-inline">
+                        <input type="radio" name="sex" value="Male" title="Male" checked="">
+                        <input type="radio" name="sex" value="Female" title="Female">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <!-- <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">Submit</button> -->
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="addInfo">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="flex_right">
+            <button class="sub">Submit</button>
+        </div>
+    </div>
+    <div class="alert">
+        <p data-time="long">Long</p>
+        <p data-time="middle">Middle</p>
+        <p data-time="short">Short</p>
+    </div>
+    <script src="../js/jq.js"></script>
+    <script src="../js/indexblockDrag.min.js"></script>
+    <script src="../js/ajax.js"></script>
+    <script src="../layui/layui.js"></script>
+    <script type="text/javascript">
+        var this_em = '', per_em = '', DomPosition = [], info = {}, fDatas = "", step = 0;
+        $('.login').text(window.sessionStorage.getItem('user') ? window.sessionStorage.getItem('user') : 'Please enter your name');
+        var DrageArr = new blockDrag({ block: "(6,6)" }, 'drag99999');
+        var blockNum = Number(DrageArr.col) * Number(DrageArr.row);
+        for (var i = 0; i < blockNum; i++) {
+            $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box"));
+        };
+        GetPosition()
+        function GetPosition() {
+            getAjax('GetPosition', 'GET', function (res, err) {
+                layer.msg(res.msg, { icon: res.code == 0 ? 1 : 2 });
+                let datas = JSON.parse((res.data).replace("/\\/g", ''));
+                let i = 0;
+                DomPosition = [];
+                $('.Wrap').remove();
+                $('.asideitem').removeClass('act');
+                DomPosition = datas;
+                DomPosition.forEach((item, indexs) => {
+                    $('#box').append(`<div class='drag drag${item.boxName.split('')[5]}'>${item.soName}</div>`);
+                    new blockDrag({ block: "(6,6)" }, 'drag' + item.boxName.split('')[5]);
+                    $('.drag' + item.boxName.split('')[5] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
+                    $('.aside' + item.boxName.split('')[5]).addClass('act');
+                })
+            })
+        };
+        //preventdefault
+        document.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+        });
+        window.addEventListener('beforeunload', function (e) {
+            window.sessionStorage.clear();
+        })
+        $('body').on('mousedown', function (e) {
+            $('.alert').css('display', 'none')
+            this_em = '';
+            e.stopPropagation();
+        });
+        layui.use(['form', 'layedit', 'laydate'], function () {
+            var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate;
+            $('.alert').on('mousedown', 'p', function (e) {
+                if (e.which == 1) {
+                    if (!window.sessionStorage.getItem('user')) {
+                        layer.msg('Please enter the information', { icon: 2, time: 800 }, function () {
+                            layer.open({
+                                type: 1,
+                                title: 'Enter information',
+                                skin: 'layui-layer-rim',
+                                area: ['420px', '320px'],
+                                content: $('#userInfo')
+                            });
+                        });
+                        return false;
+                    } else {
+                        if (info.fData.indexOf(per_em) >= 0) {
+                            layer.msg('You have already been here', { icon: 2 });
+                        } else {
+                            info.fData += '(' + per_em + ',' + $(this).attr('data-time') + '),'
+                            this_em.addClass('act');
+                            this_em.append("<span style='font-size:20px;color:#000;position: absolute;left:10px'>" + (step += 1) + "</span>");
+                            layer.msg('Selected', { icon: 1 });
+                        };
+                        $('.alert').css('display', 'none');
+                    }
+                };
+                e.stopPropagation();
+            });
+            form.on('submit(addInfo)', function (data) {
+                window.sessionStorage.setItem('user', data.field.username)
+                $('.login').text(data.field.username);
+                info = data.field;
+                info.fData = '';
+                layer.closeAll('page');
+                return false;
+            });
+            $('.sub').on('click', function () {
+                if (!window.sessionStorage.getItem('user')) {
+                    layer.msg('Please enter the necessary information', { icon: 2 });
+                    return false;
+                } else if (info.fData == '') {
+                    layer.msg('Please select the shopping order first.', { icon: 2 });
+                    return false;
+                }
+                postAjax('insertUserTime', 'POST', info, function (res, err) {
+                    layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
+                })
+            })
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/add/index.css">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <title>Edit Position</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="aside">
+            <div class="title">Supermarkt areas</div>
+            <ul>
+                <li data-name="Fresh" data-id="1" class="aside1">
+                    Fresh
+                </li>
+                <li data-name="Bread" data-id="2" class="aside2">
+                    Bread
+                </li>
+                <li data-name="Milk" data-id="3" class="aside3">
+                    Milk
+                </li>
+                <li data-name="Meat" data-id="4" class="aside4">
+                    Meat
+                </li>
+            </ul>
+        </div>
+        <div class="contnet">
+            <div class="c">
+                <button class="update">Update Area</button>
+                <div class="title"><button class="update">Reset</button> <button class="default">revert</button> <button
+                        class="pre">Save</button> </div>
+            </div>
+            <div id="box">
+
+            </div>
+        </div>
+
+        <div class="alert">
+            <img src="../images/hsz.svg" width='20px' alt="">
+            <p> Delete</p>
+        </div>
+    </div>
+
+    <script src="../js/jq.js"></script>
+    <script src="../js/blockDrag.min.js"></script>
+    <script src="../layui/layui.js"></script>
+    <script src="../js/ajax.js"></script>
+
+
+
+    <script type="text/javascript">
+        var this_em = '', per_em = '', DomPosition = [],
+            DomArr = [
+                {
+                    name: 'Fresh'
+                },
+                {
+                    name: 'Bread'
+                },
+                {
+                    name: 'Meat'
+                },
+            ];
+        getClassList(0);
+        function getClassList(n) {
+            getAjax('classListAll', 'GET', function (res, err) {
+                DomArr = [];
+                if (n == 1) {
+                    layer.msg(res.code == 0 ? 'Update successful' : 'Update failed', { icon: res.code == 0 ? 1 : 2 });
+                }
+                if (res.code == 0) {
+
+                    $('.aside ul').empty();
+                    DomArr = res.data;
+                    (res.data).forEach((item, index) => {
+                        $('.aside ul').append(`
+                            <li data-name="${item.className}" data-id="${index}" class="asideitem aside${index}">${item.className}</li>
+                        `)
+                    });
+                }
+            })
+        };
+        $('.update').on('click', function () {
+            layer.confirm('Do you want to update the areas？', {
+                btn: ['Yes', 'No']
+            }, function (index, layero) {
+                getClassList(1);
+            }, function (index) {
+                layer.msg('Cancel', { icon: 5 });
+            });
+        })
+        //reset block
+        var DrageArr = new blockDrag({ block: "(6,6)" }, 'drag99999');
+        //set the blockNum ！！！！(9*9 as planed)
+        var blockNum = Number(DrageArr.col) * Number(DrageArr.row);
+        for (var i = 0; i < blockNum; i++) {
+            $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box"));
+        };
+        // add box
+        $('.aside ul').on('click', 'li', function () {
+            if ($(this).attr('class').indexOf('act') >= 0) {
+                let boxName = '.drag' + $(this).attr('data-id') + 'Wrap', delIndex = null;
+                DomPosition.forEach((element, index) => { element.boxName === boxName ? delIndex = index : null });
+                DomPosition.splice(delIndex, 1);
+                $(boxName).remove();
+                $(this).removeClass('act');
+            } else {
+                $(this).addClass('act');
+                $('#box').append(`<div class='drag drag${$(this).attr('data-id')}'>${$(this).attr('data-name')}</div>`);
+                new blockDrag({ block: "(6,6)" }, 'drag' + $(this).attr('data-id'));
+                DomPosition.push({
+                    id: DomPosition.length,
+                    asideName: '.' + $(this).attr('class'),
+                    boxName: '.drag' + $(this).attr('data-id') + 'Wrap',
+                    soName: $(this).attr('data-name'),
+                    pageX: 0,
+                    pageY: 0
+                })
+            }
+        });
+        //prevent deault Listener 
+        document.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+        });
+        $('body').on('mousedown', function (e) {
+            $('.alert').css('display', 'none')
+            this_em = '';
+            e.stopPropagation();
+        });
+        layui.use(['form', 'layedit', 'laydate'], function () {
+            var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate;
+            form.render()
+            // delete
+            $('.alert').on('mousedown', function (e) {
+                if (e.which == 1) {
+                    $('.alert').css('display', 'none');
+                    $(DomPosition[this_em].boxName).remove();
+                    $('.' + DomPosition[this_em].asideName.split('.asideitem')[1].split('act')[0].trim()).removeClass('act');
+                    DomPosition.splice(this_em, 1)
+                    $(per_em).removeClass('act');
+                }
+                e.stopPropagation();
+            });
+            // reset
+            $('.de').on('click', function () {
+                layer.confirm('Do you want to reset the areas?', {
+                    btn: ['Yes', 'No']
+                }, function (index, layero) {
+                    DomPosition = [];
+                    $('.Wrap').remove();
+                    $('.asideitem').removeClass('act');
+                    layer.msg('Reset successful', { icon: 1 });
+                }, function (index) {
+                    layer.msg('Cancel', { icon: 5 });
+                });
+            });
+
+            // revert
+            var datas = [{ "id": 0, "asideName": ".asideitem aside1 act", "boxName": ".drag1Wrap", "soName": "生鲜鲜活区", "pageX": 0, "pageY": 0 }, { "id": 1, "asideName": ".asideitem aside2 act", "boxName": ".drag2Wrap", "soName": "休闲百货区", "pageX": 300, "pageY": 200 }, { "id": 3, "asideName": ".asideitem aside6 act", "boxName": ".drag6Wrap", "soName": "粮油区", "pageX": 0, "pageY": 200 }, { "id": 3, "asideName": ".asideitem aside3 act", "boxName": ".drag3Wrap", "soName": "酒水区", "pageX": 300, "pageY": 0 }, { "id": 4, "asideName": ".asideitem aside9 act", "boxName": ".drag9Wrap", "soName": "洁化区", "pageX": 150, "pageY": 100 }]
+            $('.default').on('click', function () {
+                layer.confirm('do you want to revert the areas？', {
+                    btn: ['Yes', 'No']
+                }, function (index, layero) {
+                    getAjax('GetPosition', 'GET', function (res, err) {
+                        layer.msg(res.msg, { icon: res.code == 0 ? 1 : 2 });
+                        let datas = JSON.parse((res.data).replace("/\\/g", ''));
+                        let i = 0;
+                        DomPosition = [];
+                        $('.Wrap').remove();
+                        $('.asideitem').removeClass('act');
+                        DomPosition = datas;
+                        DomPosition.forEach((item, indexs) => {
+                            $('#box').append(`<div class='drag drag${item.boxName.split('')[5]}'>${item.soName}</div>`);
+                            new blockDrag({ block: "(6,6)" }, 'drag' + item.boxName.split('')[5]);
+                            $('.drag' + item.boxName.split('')[5] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
+                            $('.aside' + item.boxName.split('')[5]).addClass('act');
+                        })
+                    })
+
+                    // layer.msg('revert successful', { icon: 1 });
+                }, function (index) {
+                    layer.msg('cancel', { icon: 5 });
+                });
+            });
+
+            $('.pre').on('click', function () {
+                postAjax('insertPosition', 'POST', { data: JSON.stringify(DomPosition) }, function (res, err) {
+                    layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
+                })
+            })
+        });
+
+    </script>
+</body>
+
+</html>

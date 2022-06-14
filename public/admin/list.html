@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/list/index.css">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <title>Data</title>
+    <style>
+         button{
+                margin-left: 20px;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <button type="button" class="layui-btn" id="updata">Update</button>
+        <table class="layui-hide" id="listData" lay-filter="listData"></table>
+    </div>
+    <script type="text/html" id="bar">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">Delete</a>
+      </script>
+    <script src="../js/jq.js"></script>
+    <script src="../js/blockDrag.min.js"></script>
+    <script src="../layui/layui.js"></script>
+    <script src="../js/ajax.js"></script>
+    <script type="text/javascript">
+        layui.use(['form', 'layedit', 'laydate'], function () {
+            var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate
+                , table = layui.table;
+            table.render({
+                elem: '#listData'
+                , url: 'http://127.0.0.1:3000/GetUserTime'
+                , cols: [[
+                    { field: 'id', width: 80, title: 'ID' }
+                    , { field: 'username', width: 80, title: 'Name' }
+                    , { field: 'sex', width: 80, title: 'Sex' }
+                    , { field: 'age', width: 80, title: 'Age' }
+                    , { field: 'fData', title: 'Info', minWidth: 250 }
+                    , { field: 'time', title: 'Time',width: 200 }
+                    , { fixed: 'right', width: 150, align: 'center', toolbar: '#bar' }
+                ]]
+                , page: true
+            });
+    
+            table.on('tool(listData)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'detail') {
+                } else if (obj.event === 'del') {
+                    layer.confirm('Are you sure to delete', function (index) {
+                        postAjax('delUserTime', 'POST', { id: data.id }, function (res, err) {
+                            layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
+                            if (res.code == 200) {
+                                obj.del();
+                            }
+                            layer.closeAll('page');
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+            $('#updata').on('click',function(){
+                table.render({
+                elem: '#listData'
+                , url: 'http://127.0.0.1:3000/GetUserTime'
+                , cols: [[
+                    { field: 'id', width: 80, title: 'ID' }
+                    , { field: 'username', width: 80, title: 'Name' }
+                    , { field: 'sex', width: 80, title: 'Sex' }
+                    , { field: 'age', width: 80, title: 'Age' }
+                    , { field: 'fData', title: 'Info', minWidth: 250 }
+                    , { field: 'time', title: 'Time',width: 200 }
+                    , { fixed: 'right', width: 150, align: 'center', toolbar: '#bar' }
+                ]]
+                , page: true
+            });
+            })
+        });
+
+    </script>
+</body>
+
+</html>
