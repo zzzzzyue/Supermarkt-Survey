@@ -35,8 +35,10 @@ app.use('/', home);
 app.use('/admin', admin);
 app.use('/login', login);
 
+const PORT = process.env.port || '3000'
+
 //start the server
-var server = app.listen(3000, function () {
+var server = app.listen(PORT, function () {
   var host = server.address().address;
   var port = server.address().port;
 
