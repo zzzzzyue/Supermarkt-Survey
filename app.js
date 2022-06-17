@@ -1,4 +1,5 @@
 const express = require('express');
+const mysql = require("mysql");
 //path of the static views
 const path = require('path');
 const app = express();
@@ -35,7 +36,7 @@ app.use('/', home);
 app.use('/admin', admin);
 app.use('/login', login);
 
-const PORT = process.env.port;
+const PORT = process.env.port || '3000';
 
 //start the server
 var server = app.listen(PORT, function () {
