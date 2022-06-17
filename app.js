@@ -52,9 +52,9 @@ var server = app.listen(3000, function () {
 
 //login
 app.post('/login', function (req, res) {
-  db.selectAll("select * from user_lists WHERE username = '" + req.body.username + "' AND password ='" + req.body.password + "' AND state = '1'", (e, r) => {
+  db.selectAll("select * from user_list WHERE username = '" + req.body.username + "' AND password ='" + req.body.password + "' AND state = '1'", (e, r) => {
     let tt = r.length;
-    console.log(r)
+    console.log(e);
     if (e) {
       res.send({ code: 400, msg: 'Login failed' });
     };

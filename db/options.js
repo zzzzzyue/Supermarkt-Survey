@@ -15,7 +15,7 @@ let selectAll = (sql, callback) => {
     var string = JSON.stringify(result);
     var data = JSON.parse(string);
     callback('', data);
-    // console.log(string);
+    console.log(string);
   })
 }
 
