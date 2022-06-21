@@ -70,7 +70,7 @@ app.post('/login', function (req, res) {
 
 //------------------------getting list and position
 
-app.post('/insertClassList', function (req, res) {
+app.post('/admin/insertClassList', function (req, res) {
   req.body.time = new Date().getTime();
   db.insertData("classList", req.body, (e, r) => {
     if (e) {
@@ -128,7 +128,7 @@ app.get('/classListAll', function (req, res) {
   })
 });
 // updataClassList
-app.post('/updataClassList', function (req, res) {
+app.post('/admin/updataClassList', function (req, res) {
   var time = new Date().getTime();
   db.updateData('classList', { 'className': req.body.className, 'time': time }, { 'id': req.body.id }, (e, r) => {
     if (e) {
@@ -142,7 +142,7 @@ app.post('/updataClassList', function (req, res) {
   })
 });
 // delete classs list
-app.post('/delClassList', function (req, res) {
+app.post('/admin/delClassList', function (req, res) {
   db.deleteData('classList', { 'id': req.body.id }, (e, r) => {
     if (e) {
       res.send({ code: 400, msg: 'Deleting failed' });
@@ -204,7 +204,7 @@ app.get('/updataPosition', function (req, res) {
   })
 });
 // insert position
-app.post('/insertPosition', function (req, res) {
+app.post('/admin/insertPosition', function (req, res) {
   req.body.time = new Date().getTime();
   db.insertData("positionList", req.body, (e, r) => {
     if (e) {
@@ -261,7 +261,7 @@ app.post('/insertUserTime', function (req, res) {
   })
 })
 // delete user time
-app.post('/delUserTime', function (req, res) {
+app.post('/admin/delUserTime', function (req, res) {
   db.deleteData('userTime', { 'id': req.body.id }, (e, r) => {
     if (e) {
       res.send({ code: 400, msg: 'Deleting failed' });
