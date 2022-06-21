@@ -44,11 +44,11 @@
             , laydate = layui.laydate
             , element = layui.element;
         form.on('submit(login)', function (data) {
-            postAjax('login', 'POST', data.field, (res) => {
+            postAjax('', 'POST', data.field, (res) => {
                 if (res.code == 200) {
                     window.sessionStorage.setItem('user', res.data.username);
                     layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2, time: 1000 }, function () {
-                        window.location.href = "./admin/index.html";
+                        window.location.href = "./admin";
                     })
                 } else {
                     layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2, time: 1000 })

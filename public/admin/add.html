@@ -68,7 +68,7 @@
             ];
         getClassList(0);
         function getClassList(n) {
-            getAjax('classListAll', 'GET', function (res, err) {
+            getAjax('/classListAll', 'GET', function (res, err) {
                 DomArr = [];
                 if (n == 1) {
                     layer.msg(res.code == 0 ? 'Update successful' : 'Update failed', { icon: res.code == 0 ? 1 : 2 });

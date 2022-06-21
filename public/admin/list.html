@@ -36,7 +36,7 @@
                 , table = layui.table;
             table.render({
                 elem: '#listData'
-                , url: 'http://127.0.0.1:3000/GetUserTime'
+                , url: '/GetUserTime'
                 , cols: [[
                     { field: 'id', width: 80, title: 'ID' }
                     , { field: 'username', width: 80, title: 'Name' }
@@ -68,7 +68,7 @@
             $('#updata').on('click',function(){
                 table.render({
                 elem: '#listData'
-                , url: 'http://127.0.0.1:3000/GetUserTime'
+                , url: '/GetUserTime'
                 , cols: [[
                     { field: 'id', width: 80, title: 'ID' }
                     , { field: 'username', width: 80, title: 'Name' }

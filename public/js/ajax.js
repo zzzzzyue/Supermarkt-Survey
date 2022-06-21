@@ -1,6 +1,6 @@
 function postAjax(url,type,data,callback){
     $.ajax({
-        url: 'http://127.0.0.1:3000/'+url,
+        url: url,
         type: type, 
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         data: data,
@@ -10,13 +10,13 @@ function postAjax(url,type,data,callback){
         },
         error: function (err) {
             console.log(err)
-            callback({code:500,data:[],msg:'错误'})
+            callback({code:500,data:[],msg:'Error'})
         }
     })
 }
 function getAjax(url,type,callback){
     $.ajax({
-        url: 'http://127.0.0.1:3000/'+url,
+        url: url,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         success: function (res) {
             callback(res)
@@ -24,7 +24,7 @@ function getAjax(url,type,callback){
         },
         error: function (err) {
             console.log(err)
-            callback({code:500,data:[],msg:'错误'})
+            callback({code:500,data:[],msg:'Error'})
         }
     })
 }
