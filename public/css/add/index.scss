@@ -10,7 +10,19 @@ body{
     height:800px;
     position: relative;
 }
+#box2{
+    height:800px;
+    position: relative;
+}
 #box:after{
+    content:".";
+    font-size: 0px;
+    display: block;
+    visibility: none;
+    clear: both;
+    height: 0;
+}
+#box2:after{
     content:".";
     font-size: 0px;
     display: block;
@@ -39,6 +51,10 @@ body{
 }
 
 #box .block{
+    float: left;
+    outline: 1px solid #dfdfdf;
+}
+#box2 .block{
     float: left;
     outline: 1px solid #dfdfdf;
 }

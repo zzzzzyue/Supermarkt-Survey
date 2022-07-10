@@ -198,6 +198,7 @@ app.get('/admin/GetCurrent', function (req, res) {
       res.send(re);
       return false;
     };
+    console.log(res);
     db.selectAll("select * from positionList WHERE id = " + re.data, (e, r) => {
       if (e) {
         res.send({ code: 400, msg: 'Getting failed' });
@@ -211,8 +212,31 @@ app.get('/admin/GetCurrent', function (req, res) {
       };
     })
   })
-
 });
+
+app.get('/admin/GetCurrent2', function (req, res) {
+  countShop('select count(*) from positionList2', function (re) {
+    if (re.code != 200) {
+      res.send(re);
+      return false;
+    };
+    db.selectAll("select * from positionList2 WHERE id = " + re.data, (e, r) => {
+      console.log(re.data)
+      if (e) {
+        res.send({ code: 400, msg: 'Getting failed' });
+        return false;
+      };
+      if (!r) {
+        res.send({ code: 400, msg: 'Getting failed' });
+        return false;
+      } else {
+        res.send({ code: 0, msg: 'Getting successful', data: r[0].data });
+      };
+    })
+  })
+});
+
+
 // update positionList
 app.get('/updataPosition', function (req, res) {
   var time = new Date().getTime()
@@ -249,6 +273,7 @@ app.post('/admin/insertPosition2', function (req, res) {
       res.send({ code: 400, msg: 'Saving areas failed' });
     };
     if (!r) {
+      res.send(r)
       res.send({ code: 400, msg: 'Saving areas failed' });
     } else {
       res.send({ code: 200, msg: 'Saving areas successful' });

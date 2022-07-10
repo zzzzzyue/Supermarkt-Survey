@@ -34,7 +34,6 @@ $('.update').on('click', function () {
 var DrageArr = new blockDrag({ block: "(18,18)" }, 'drag99999');
 //set the blockNum ！！！！(18*18 as planed)
 var blockNum = Number(DrageArr.col) * Number(DrageArr.row);
-console.log(blockNum);
 for (var i = 0; i < blockNum; i++) {
     $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box"));
 };
@@ -102,13 +101,13 @@ layui.use(['form', 'layedit', 'laydate'], function () {
         });
     });
 
-    // revert
+    // show the current map
     var datas = [{ "id": 0, "asideName": ".asideitem aside1 act", "boxName": ".drag1Wrap", "soName": "1", "pageX": 0, "pageY": 0 }, { "id": 1, "asideName": ".asideitem aside2 act", "boxName": ".drag2Wrap", "soName": "2", "pageX": 300, "pageY": 200 }, { "id": 3, "asideName": ".asideitem aside6 act", "boxName": ".drag6Wrap", "soName": "3", "pageX": 0, "pageY": 200 }, { "id": 3, "asideName": ".asideitem aside3 act", "boxName": ".drag3Wrap", "soName": "4", "pageX": 300, "pageY": 0 }, { "id": 4, "asideName": ".asideitem aside9 act", "boxName": ".drag9Wrap", "soName": "5", "pageX": 150, "pageY": 100 }]
     $('.default').on('click', function () {
         layer.confirm('do you want to revert the areas？', {
             btn: ['Yes', 'No']
         }, function (index, layero) {
-            getAjax('GetCurrent', 'GET', function (res, err) {
+            getAjax('GetCurrent2', 'GET', function (res, err) {
                 layer.msg(res.msg, { icon: res.code == 0 ? 1 : 2 });
                 let datas = JSON.parse((res.data).replace("/\\/g", ''));
                 let i = 0;

@@ -1,0 +1,60 @@
+.alert {
+    flex-direction: column;
+    width: 120px !important;
+    padding: 10px 0 !important;
+    height: auto !important;
+}
+
+.alert li {
+    border-bottom: 1px solid #f4f4f4;
+}
+
+#box .act {
+    background-color: #e18b8b !important;
+    color: #fff !important;
+}
+
+#box2 .act {
+    background-color: #e18b8b !important;
+    color: #fff !important;
+}
+
+.layui-container {
+    padding: 20px 0;
+}
+
+.container {
+    padding: 20px 0 !important;
+    justify-content: center;
+}
+
+.layui-elem-quote {
+    display: flex;
+    justify-content: space-between;
+}
+
+.layui-layer-rim {
+    border-radius: 0 !important;
+    border: none !important;
+}
+
+.layui-form {
+    padding: 20px !important;
+}
+
+.flex_right {
+    position: fixed;
+    top: 40%;
+    right: 20px;
+    z-index: 9999;
+}
+
+.flex_right button {
+    width: 70px;
+    height: 50px;
+    border: none;
+    background: #009688;
+    color: #fff;
+    cursor: pointer;
+    /* text */
+}

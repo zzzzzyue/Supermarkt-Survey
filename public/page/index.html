@@ -12,64 +12,7 @@
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" href="../css/add/index.css">
     <link rel="stylesheet" href="../layui/css/layui.css">
-    <style>
-        .alert {
-            flex-direction: column;
-            width: 120px !important;
-            padding: 10px 0 !important;
-            height: auto !important;
-        }
-
-        .alert li {
-            border-bottom: 1px solid #f4f4f4;
-        }
-
-        #box .act {
-            background-color: #e18b8b !important;
-            color: #fff !important;
-        }
-
-        .layui-container {
-            padding: 20px 0;
-        }
-
-        .container {
-            padding: 20px 0 !important;
-            justify-content: center;
-        }
-
-        .layui-elem-quote {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .layui-layer-rim {
-            border-radius: 0 !important;
-            border: none !important;
-        }
-
-        .layui-form {
-            padding: 20px !important;
-        }
-
-        .flex_right {
-            position: fixed;
-            top: 40%;
-            right: 20px;
-            z-index: 9999;
-        }
-
-        .flex_right button {
-            width: 70px;
-            height: 50px;
-            border: none;
-            background: #009688;
-            color: #fff;
-            cursor: pointer;
-            /* text */
-        }
-    </style>
-
+    <link rel="stylesheet" href="../css/page/index.css"
 </head>
 
 <body>
@@ -119,6 +62,8 @@
             <div class="contnet">
                 <div id="box">
                 </div>
+                <div id="box2">
+                </div>
             </div>
         </div>
         <div class="flex_right">
@@ -135,16 +80,25 @@
     <script src="../js/ajax.js"></script>
     <script src="../layui/layui.js"></script>
     <script type="text/javascript">
+        //inital the var of the function
         var this_em = '', per_em = '', DomPosition = [], info = {}, fDatas = "", step = 0, day='', time='';
+        //set the block size and the block entry
         var DrageArr = new blockDrag({ block: "(18,18)" }, 'drag99999');
         var blockNum = Number(DrageArr.col) * Number(DrageArr.row);
+
+        //construct the first map
         for (var i = 0; i < blockNum; i++) {
             $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box"));
+        };
+        //construct the second map
+        for (var i = 0; i < blockNum; i++) {
+            $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box2"));
         };
         GetPosition()
         function GetPosition() {
             getAjax('GetPosition', 'GET', function (res, err) {
                 layer.msg(res.msg, { icon: res.code == 0 ? 1 : 2 });
+                console.log(res.data)
                 let datas = JSON.parse((res.data).replace("/\\/g", ''));
                 let i = 0;
                 DomPosition = [];
