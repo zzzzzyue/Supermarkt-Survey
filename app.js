@@ -45,6 +45,8 @@ var server = app.listen(3000, function () {
   console.log('Example app listening at localhost:3000', host, port);
 });
 
+
+
 //---------------------login and logout functions, -----------------
 //missed register function
 
@@ -189,6 +191,28 @@ app.get('/GetPosition', function (req, res) {
   })
 
 });
+
+app.get('/admin/GetCurrent', function (req, res) {
+  countShop('select count(*) from positionList', function (re) {
+    if (re.code != 200) {
+      res.send(re);
+      return false;
+    };
+    db.selectAll("select * from positionList WHERE id = " + re.data, (e, r) => {
+      if (e) {
+        res.send({ code: 400, msg: 'Getting failed' });
+        return false;
+      };
+      if (!r) {
+        res.send({ code: 400, msg: 'Getting failed' });
+        return false;
+      } else {
+        res.send({ code: 0, msg: 'Getting successful', data: r[0].data });
+      };
+    })
+  })
+
+});
 // update positionList
 app.get('/updataPosition', function (req, res) {
   var time = new Date().getTime()
@@ -217,9 +241,20 @@ app.post('/admin/insertPosition', function (req, res) {
     };
   })
 })
-
-
-
+//insert to another map
+app.post('/admin/insertPosition2', function (req, res) {
+  req.body.time = new Date().getTime();
+  db.insertData("positionList2", req.body, (e, r) => {
+    if (e) {
+      res.send({ code: 400, msg: 'Saving areas failed' });
+    };
+    if (!r) {
+      res.send({ code: 400, msg: 'Saving areas failed' });
+    } else {
+      res.send({ code: 200, msg: 'Saving areas successful' });
+    };
+  })
+})
 
 //get user time
 app.get('/GetUserTime', function (req, res) {
@@ -233,7 +268,7 @@ app.get('/GetUserTime', function (req, res) {
       res.send({ code: 400, msg: 'time failed' });
       return false;
     } else {
-      countShop('select count(*) from userTime', function (re) {
+      countShop('select count(*) from surList', function (re) {
         if (re.code != 200) {
           res.send(re);
           return false;
@@ -248,7 +283,6 @@ app.get('/GetUserTime', function (req, res) {
 
 // insert user visite time
 app.post('/insertUserTime', function (req, res) {
-  req.body.time = new Date().getTime();
   db.insertData("userTime", req.body, (e, r) => {
     if (e) {
       res.send({ code: 400, msg: 'Saving failed' });

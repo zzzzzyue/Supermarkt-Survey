@@ -74,15 +74,11 @@
 
 <body>
     <div class="layui-container">
-        <div class="userInfo" id="userInfo">
+        <div class="userInfo" id="userInfo" style="display: none;">
+
             <form class="layui-form" action="">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">Name:</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="username" lay-verify="required" placeholder="Please enter your name"
-                            autocomplete="off" class="layui-input">
-                    </div>
-                </div>
+                <p>Please fill in the necessary information first, as well as the time you go shopping most often.</p>
+                <br />
                 <div class="layui-form-item">
                     <label class="layui-form-label">Age</label>
                     <div class="layui-input-inline">
@@ -91,59 +87,39 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">Sex:</label>
+
+                    <label class="layui-form-label">Shopping day</label>
                     <div class="layui-input-inline">
-                        <input type="radio" name="sex" value="Male" title="Male" checked="">
-                        <input type="radio" name="sex" value="Female" title="Female">
+                        <input type="text" id="day" name = "day" lay-verify="required" autocomplete="off" class="layui-input"
+                            placeholder="--No Selection--">
                     </div>
+
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">Shopping time</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="time" name="time" lay-verify="required" autocomplete="off" class="layui-input"
+                            placeholder="--No Selection--">
+                    </div>
+
+
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <!-- <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">Submit</button> -->
                         <button type="submit" class="layui-btn" lay-submit="" lay-filter="addInfo">Submit</button>
                     </div>
                 </div>
             </form>
         </div>
         <blockquote class="layui-elem-quote">
-            <p>data protection</p> <span class="login">Please enter your information</span>
+            <p>Information Protection Statement: This questionnaire will only be used to collect information for the
+                bachelor thesis and will not be used for other purposes.</p>
         </blockquote>
         <div class="container ">
             <div class="contnet">
                 <div id="box">
                 </div>
             </div>
-        </div>
-        <div class="userInfo" id="userInfo" style="display: none;">
-            <form class="layui-form" action="" lay-filter="example">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">Name:</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="username" lay-verify="required" placeholder="Please enter your name"
-                            autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">Age</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="age" lay-verify="required" placeholder="Please enter your age"
-                            autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">Sex:</label>
-                    <div class="layui-input-inline">
-                        <input type="radio" name="sex" value="Male" title="Male" checked="">
-                        <input type="radio" name="sex" value="Female" title="Female">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <!-- <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">Submit</button> -->
-                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="addInfo">Submit</button>
-                    </div>
-                </div>
-            </form>
         </div>
         <div class="flex_right">
             <button class="sub">Submit</button>
@@ -159,9 +135,8 @@
     <script src="../js/ajax.js"></script>
     <script src="../layui/layui.js"></script>
     <script type="text/javascript">
-        var this_em = '', per_em = '', DomPosition = [], info = {}, fDatas = "", step = 0;
-        $('.login').text(window.sessionStorage.getItem('user') ? window.sessionStorage.getItem('user') : 'Please enter your name');
-        var DrageArr = new blockDrag({ block: "(6,6)" }, 'drag99999');
+        var this_em = '', per_em = '', DomPosition = [], info = {}, fDatas = "", step = 0, day='', time='';
+        var DrageArr = new blockDrag({ block: "(18,18)" }, 'drag99999');
         var blockNum = Number(DrageArr.col) * Number(DrageArr.row);
         for (var i = 0; i < blockNum; i++) {
             $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box"));
@@ -177,44 +152,49 @@
                 $('.asideitem').removeClass('act');
                 DomPosition = datas;
                 DomPosition.forEach((item, indexs) => {
-                    $('#box').append(`<div class='drag drag${item.boxName.split('')[5]}'>${item.soName}</div>`);
-                    new blockDrag({ block: "(6,6)" }, 'drag' + item.boxName.split('')[5]);
-                    $('.drag' + item.boxName.split('')[5] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
-                    $('.aside' + item.boxName.split('')[5]).addClass('act');
+                    $('#box').append(`<div class='drag drag${item.boxName.match(/\d+(\.\d+)?/g)[0]}'>${item.soName}</div>`);
+                    new blockDrag({ block: "(18,18)" }, 'drag' + item.boxName.match(/\d+(\.\d+)?/g)[0]);
+                    $('.drag' + item.boxName.match(/\d+(\.\d+)?/g)[0] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
+                    $('.aside' + item.boxName.match(/\d+(\.\d+)?/g)[0]).addClass('act');
                 })
             })
         };
-        //preventdefault
+        //preventdefault should be later added after debugging
         document.addEventListener("contextmenu", (event) => {
             event.preventDefault();
         });
+        //refresh the page
         window.addEventListener('beforeunload', function (e) {
             window.sessionStorage.clear();
         })
         $('body').on('mousedown', function (e) {
+            //click the mouse and hide the choice box
             $('.alert').css('display', 'none')
             this_em = '';
             e.stopPropagation();
         });
-        layui.use(['form', 'layedit', 'laydate'], function () {
+
+        //parse the form to the database
+        layui.use(['form', 'layedit', 'laydate', 'dropdown'], function () {
             var form = layui.form
                 , layer = layui.layer
                 , layedit = layui.layedit
                 , laydate = layui.laydate;
             $('.alert').on('mousedown', 'p', function (e) {
                 if (e.which == 1) {
-                    if (!window.sessionStorage.getItem('user')) {
-                        layer.msg('Please enter the information', { icon: 2, time: 800 }, function () {
+                    if (!window.sessionStorage.getItem('age')) {
+                        layer.msg('Please enter the information', { icon: 2, time: 300 }, function () {
                             layer.open({
                                 type: 1,
-                                title: 'Enter information',
+                                title: 'Information box',
                                 skin: 'layui-layer-rim',
-                                area: ['420px', '320px'],
+                                area: ['450px', '520px'],
                                 content: $('#userInfo')
                             });
                         });
                         return false;
                     } else {
+                        console.log(info.fData)
                         if (info.fData.indexOf(per_em) >= 0) {
                             layer.msg('You have already been here', { icon: 2 });
                         } else {
@@ -224,20 +204,81 @@
                             layer.msg('Selected', { icon: 1 });
                         };
                         $('.alert').css('display', 'none');
+                        e.stopPropagation();
                     }
                 };
-                e.stopPropagation();
+
             });
+
+            //dropdown
+            var dropdown_day = layui.dropdown
+            dropdown_day.render({
+                elem: '#day' //可绑定在任意元素中，此处以上述按钮为例
+                , data: [{
+                    title: 'Monday'
+                    , id: 101
+                }, {
+                    title: 'Tuesday'
+                    , id: 102
+                }, {
+                    title: 'Wednesday'
+                    , id: 103
+                }, {
+                    title: 'Thursday'
+                    , id: 104
+                }, {
+                    title: 'Friday'
+                    , id: 105
+                }, {
+                    title: 'Saturday'
+                    , id: 106
+                }, {
+                    title: 'Sunday'
+                    , id: 107
+                },]
+                , id: 'day'
+                //菜单被点击的事件
+                , click: function (obj) {
+                    $('#day').val(obj.title);
+                }
+            });
+
+            var dropdown_time = layui.dropdown
+            dropdown_time.render({
+                elem: '#time' //可绑定在任意元素中，此处以上述按钮为例
+                , data: [{
+                    title: 'Morning(07AM--11AM)'
+                    , id: 201
+                }, {
+                    title: 'Noon(11AM--15PM)'
+                    , id: 202
+                }, {
+                    title: 'Afternoon(15PM--19PM)'
+                    , id: 203
+                }, {
+                    title: 'Evening(19PM--22PM)'
+                    , id: 204
+                }]
+                , id: 'time'
+                //菜单被点击的事件
+                , click: function (obj) {
+                    $('#time').val(obj.title);
+
+                }
+            });
+
+
+            //submit
             form.on('submit(addInfo)', function (data) {
-                window.sessionStorage.setItem('user', data.field.username)
-                $('.login').text(data.field.username);
+                window.sessionStorage.setItem('age', data.field.age)
+                console.log(data);
                 info = data.field;
                 info.fData = '';
                 layer.closeAll('page');
                 return false;
             });
             $('.sub').on('click', function () {
-                if (!window.sessionStorage.getItem('user')) {
+                if (!window.sessionStorage.getItem('age')) {
                     layer.msg('Please enter the necessary information', { icon: 2 });
                     return false;
                 } else if (info.fData == '') {
@@ -245,9 +286,16 @@
                     return false;
                 }
                 postAjax('insertUserTime', 'POST', info, function (res, err) {
+                    console.log(info);
                     layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
                 })
             })
+        });
+
+
+
+        layui.use('dropdown', function () {
+
         });
     </script>
 </body>
