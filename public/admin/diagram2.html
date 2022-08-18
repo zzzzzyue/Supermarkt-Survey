@@ -48,7 +48,7 @@
     <div class="container ">
         <div class="contnet">
             <div class="map1Diagram" style="margin-bottom: 100px;">
-                <h1>The results of the firtst map</h1>
+                <h1>The results of the second map</h1>
                 <p>
                     Please choose the day and time to see the result of the time.
                 </p>
@@ -89,15 +89,13 @@
                         </div>
                     </div>
                 </form>
-
                 <div class="mapbox" id="box">
                 </div>
                 <div class="color-cube">
                     <div class="layui-row">
                         <div class="green layui-col-md4">
                             <div class="cube-green"></div>
-                            <p>Crowded at the moment</p>
-
+                            <p>Not too many people</p>
 
                         </div>
                         <div class="orange layui-col-md4">
@@ -106,7 +104,7 @@
                         </div>
                         <div class="red layui-col-md4">
                             <div class="cube-red"></div>
-                            <p>Not too many people</p>
+                            <p>Crowded at the moment</p>
                         </div>
                     </div>
                 </div>
@@ -132,17 +130,12 @@
         var DrageArr = new blockDrag({ block: "(18,18)" }, 'drag99999');
         var blockNum = Number(DrageArr.col) * Number(DrageArr.row);
 
-        //construct the first map
         for (var i = 0; i < blockNum; i++) {
             $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box"));
         };
-        //construct the second map
-        for (var i = 0; i < blockNum; i++) {
-            $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box2"));
-        };
 
-        //get the posisiton of first map
-        GetCurrentMap1()
+        //get the posisiton of second map
+        GetCurrentMap2()
         //GetCurrentMap2()
 
         function removeAll() {

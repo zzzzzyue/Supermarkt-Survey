@@ -55,7 +55,7 @@ function GetCurrentMap2() {
         })
         DomPosition2.forEach((item, indexs) => {
             if (item.soName != '') {
-                $('#box2').append(`<div class='drag drag${item.boxName.match(/\d+(\.\d+)?/g)[0]}'>${item.soName}</div>`);
+                $('#box').append(`<div class='drag drag${item.boxName.match(/\d+(\.\d+)?/g)[0]}'>${item.soName}</div>`);
                 new blockDrag({ block: "(18,18)" }, 'drag' + item.boxName.match(/\d+(\.\d+)?/g)[0]);
                 $('.drag' + item.boxName.match(/\d+(\.\d+)?/g)[0] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
                 $('.aside' + item.boxName.match(/\d+(\.\d+)?/g)[0]).addClass('act');
@@ -67,7 +67,7 @@ function GetCurrentMap2() {
                 })
             } else {
                 empty_block++
-                $('#box2').append(`<div class='drag drag${empty_block}empty'></div>`);
+                $('#box').append(`<div class='drag drag${empty_block}empty'></div>`);
                 new blockDrag({ block: "(18,18)" }, 'drag' + empty_block + 'empty');
                 $('.drag' + empty_block + 'emptyWrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
                 coordinate.push({
@@ -190,10 +190,13 @@ function fillColor(block_name, status_code) {
         }
         //orange
         if (status_code == 2) {
+            //orange
             $('.status' + block_name + i).css({ 'background': 'rgb(217, 135, 59)' });
         } else if (status_code == 3) {
+            //green
             $('.status' + block_name + i).css({ 'background': 'rgb(101, 217, 59)' });
         } else {
+            //red
             $('.status' + block_name + i).css({ 'background': 'rgb(209, 50, 50)' });
         }
     }
