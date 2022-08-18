@@ -46,6 +46,21 @@ body {
   line-height: 20px;
 }
 
+.status {
+  width: 60px;
+  height: 40px;
+  background: rgb(209, 50, 50);
+}
+
+
+.emptyblock {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background: rgb(30, 30, 30);
+  line-height: 20px;
+}
+
 .drag::after {
   content: "";
   position: absolute;
@@ -163,6 +178,19 @@ body {
   background: #009688;
   margin-bottom: 5px;
 }
+
+.empty {
+  cursor: pointer;
+  width: 100px;
+  height: 35px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  color: #fff;
+  background: #5b6463;
+  margin-bottom: 5px;
+}
+
 
 .container .contnet .title {
   display: -webkit-box;

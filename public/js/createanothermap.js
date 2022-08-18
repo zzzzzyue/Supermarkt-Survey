@@ -1,5 +1,5 @@
-var this_em = '', per_em = '', DomPosition = [],
-    DomArr = [];
+var this_em = '', per_em = '', DomPosition = [], empty_block = 0, EmptyPosition = [];
+DomArr = [];
 getClassList(0);
 //apend the class list to the aside ul
 function getClassList(n) {
@@ -60,6 +60,22 @@ $('.aside ul').on('click', 'li', function () {
         })
     }
 });
+
+//add empty box
+$('.empty').on('click', function () {
+    empty_block++
+    $('#box').append(`<div class='drag drag${empty_block}empty'></div>`);
+    new blockDrag({ block: "(18,18)" }, 'drag' + empty_block + 'empty');
+    DomPosition.push({
+        id: DomPosition.length,
+        soName: '',
+        boxName: '.drag' + empty_block + 'emptyWrap',
+        pageX: 0,
+        pageY: 0
+    })
+})
+
+
 //prevent deault Listener 
 document.addEventListener("contextmenu", (event) => {
     event.preventDefault();
@@ -79,8 +95,13 @@ layui.use(['form', 'layedit', 'laydate'], function () {
     $('.alert').on('mousedown', function (e) {
         if (e.which == 1) {
             $('.alert').css('display', 'none');
+            console.log(DomPosition[this_em])
             $(DomPosition[this_em].boxName).remove();
-            $('.' + DomPosition[this_em].asideName.split('.asideitem')[1].split('act')[0].trim()).removeClass('act');
+            if (DomPosition[this_em].soName != '') {
+                if ($('.' + DomPosition[this_em].asideName.split('.asideitem')[1].split('act')[0].trim()) != '') {
+                    $('.' + DomPosition[this_em].asideName.split('.asideitem')[1].split('act')[0].trim()).removeClass('act');
+                }
+            }
             DomPosition.splice(this_em, 1)
             $(per_em).removeClass('act');
         }
@@ -102,7 +123,7 @@ layui.use(['form', 'layedit', 'laydate'], function () {
     });
 
     // show the current map
-    var datas = [{ "id": 0, "asideName": ".asideitem aside1 act", "boxName": ".drag1Wrap", "soName": "1", "pageX": 0, "pageY": 0 }, { "id": 1, "asideName": ".asideitem aside2 act", "boxName": ".drag2Wrap", "soName": "2", "pageX": 300, "pageY": 200 }, { "id": 3, "asideName": ".asideitem aside6 act", "boxName": ".drag6Wrap", "soName": "3", "pageX": 0, "pageY": 200 }, { "id": 3, "asideName": ".asideitem aside3 act", "boxName": ".drag3Wrap", "soName": "4", "pageX": 300, "pageY": 0 }, { "id": 4, "asideName": ".asideitem aside9 act", "boxName": ".drag9Wrap", "soName": "5", "pageX": 150, "pageY": 100 }]
+    //var datas = [{ "id": 0, "asideName": ".asideitem aside1 act", "boxName": ".drag1Wrap", "soName": "1", "pageX": 0, "pageY": 0 }, { "id": 1, "asideName": ".asideitem aside2 act", "boxName": ".drag2Wrap", "soName": "2", "pageX": 300, "pageY": 200 }, { "id": 3, "asideName": ".asideitem aside6 act", "boxName": ".drag6Wrap", "soName": "3", "pageX": 0, "pageY": 200 }, { "id": 3, "asideName": ".asideitem aside3 act", "boxName": ".drag3Wrap", "soName": "4", "pageX": 300, "pageY": 0 }, { "id": 4, "asideName": ".asideitem aside9 act", "boxName": ".drag9Wrap", "soName": "5", "pageX": 150, "pageY": 100 }]
     $('.default').on('click', function () {
         layer.confirm('do you want to revert the areas？', {
             btn: ['Yes', 'No']
@@ -112,14 +133,25 @@ layui.use(['form', 'layedit', 'laydate'], function () {
                 let datas = JSON.parse((res.data).replace("/\\/g", ''));
                 let i = 0;
                 DomPosition = [];
+                empty_block = 0;
                 $('.Wrap').remove();
                 $('.asideitem').removeClass('act');
-                DomPosition = datas;
+                datas.forEach((item, indexs) => {
+                    DomPosition.push(item)
+                })
                 DomPosition.forEach((item, indexs) => {
-                    $('#box').append(`<div class='drag drag${item.boxName.match(/\d+(\.\d+)?/g)[0]}'>${item.soName}</div>`);
-                    new blockDrag({ block: "(18,18)" }, 'drag' + item.boxName.match(/\d+(\.\d+)?/g)[0]);
-                    $('.drag' + item.boxName.match(/\d+(\.\d+)?/g)[0] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
-                    $('.aside' + item.boxName.match(/\d+(\.\d+)?/g)[0]).addClass('act');
+                    if (item.soName != '') {
+                        $('#box').append(`<div class='drag drag${item.boxName.match(/\d+(\.\d+)?/g)[0]}'>${item.soName}</div>`);
+                        new blockDrag({ block: "(18,18)" }, 'drag' + item.boxName.match(/\d+(\.\d+)?/g)[0]);
+                        $('.drag' + item.boxName.match(/\d+(\.\d+)?/g)[0] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
+                        $('.aside' + item.boxName.match(/\d+(\.\d+)?/g)[0]).addClass('act');
+                    } else {
+                        empty_block++
+                        $('#box').append(`<div class='drag drag${empty_block}empty'></div>`);
+                        new blockDrag({ block: "(18,18)" }, 'drag' + empty_block + 'empty');
+                        $('.drag' + empty_block + 'emptyWrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
+                    }
+
                 })
             })
 

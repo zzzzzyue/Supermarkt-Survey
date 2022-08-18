@@ -17,9 +17,10 @@
         .layui-layer-content {
             padding: 20px !important;
         }
-        button{
-                margin-left: 20px;
-            }
+
+        button {
+            margin-left: 20px;
+        }
     </style>
 </head>
 
@@ -73,20 +74,20 @@
             var table = layui.table,
                 form = layui.form;
             getRender();
-          function getRender(){
-            table.render({
-                elem: '#listData'
-                , url: '/classList'
-                , cols: [[ 
-                    { field: 'id', title: 'ID', width: 80, sort: true }
-                    , { field: 'className', title: 'class', maxWidth: 100 }
-                    , { field: 'time', title: 'time' }
-                    , { fixed: 'right', width: 150, align: 'center', toolbar: '#bar' }
-                ]]
-                , page: true
-                , even: true
-            });
-          }
+            function getRender() {
+                table.render({
+                    elem: '#listData'
+                    , url: '/classList'
+                    , cols: [[
+                        { field: 'id', title: 'ID', width: 80, sort: true }
+                        , { field: 'className', title: 'class', maxWidth: 100 }
+                        , { field: 'time', title: 'time' }
+                        , { fixed: 'right', width: 150, align: 'center', toolbar: '#bar' }
+                    ]]
+                    , page: true
+                    , even: true
+                });
+            }
             table.on('tool(listData)', function (obj) {
                 var data = obj.data;
                 if (obj.event === 'detail') {
@@ -97,7 +98,7 @@
                             if (res.code == 200) {
                                 obj.del();
                             }
-                        layer.closeAll('page');
+                            layer.closeAll('page');
                         });
                         layer.close(index);
                     });
@@ -121,7 +122,7 @@
                 postAjax('updataClassList', 'POST', data.field, function (res, err) {
                     layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
                     layer.closeAll('page');
-                    
+
                 })
                 return false;
             });
@@ -130,8 +131,8 @@
                 layer.open({
                     type: 1,
                     title: 'Add Area',
-                    skin: 'layui-layer-rim', 
-                    area: ['420px', '240px'], 
+                    skin: 'layui-layer-rim',
+                    area: ['420px', '240px'],
                     content: $('#addClassForm')
                 });
             })
@@ -139,7 +140,7 @@
             form.on('submit(addClass)', function (data) {
                 postAjax('insertClassList', 'POST', data.field, function (res, err) {
                     layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
-                    if(res.code == 200){
+                    if (res.code == 200) {
                         getRender();
                     };
                     layer.closeAll('page');

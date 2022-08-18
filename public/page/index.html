@@ -12,8 +12,7 @@
     <meta name="format-detection" content="telephone=no">
     <link rel="stylesheet" href="../css/add/index.css">
     <link rel="stylesheet" href="../layui/css/layui.css">
-    <link rel="stylesheet" href="../css/page/index.css"
-</head>
+    <link rel="stylesheet" href="../css/page/index.css" </head>
 
 <body>
     <div class="layui-container">
@@ -33,16 +32,16 @@
 
                     <label class="layui-form-label">Shopping day</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="day" name = "day" lay-verify="required" autocomplete="off" class="layui-input"
-                            placeholder="--No Selection--">
+                        <input type="text" id="day" name="day" lay-verify="required" autocomplete="off"
+                            class="layui-input" placeholder="--No Selection--">
                     </div>
 
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">Shopping time</label>
                     <div class="layui-input-inline">
-                        <input type="text" id="time" name="time" lay-verify="required" autocomplete="off" class="layui-input"
-                            placeholder="--No Selection--">
+                        <input type="text" id="time" name="time" lay-verify="required" autocomplete="off"
+                            class="layui-input" placeholder="--No Selection--">
                     </div>
 
 
@@ -54,26 +53,32 @@
                 </div>
             </form>
         </div>
-        <blockquote class="layui-elem-quote">
-            <p>Information Protection Statement: This questionnaire will only be used to collect information for the
-                bachelor thesis and will not be used for other purposes.</p>
-        </blockquote>
+        <div class="layui-elem-field">
+            <strong>Information Protection Statement: This questionnaire will only be used to collect information for
+                the
+                bachelor thesis and will not be used for other purposes.</strong><br><br>
+            <h3>How to do the survey:</h3><br>
+            <p>You will complete two surveys for two different supermarket layouts.Please right-click to select your
+                shopping order and answer some basic questions before proceeding to the questionnaire.</p><br>
+            <p>About shopping time: short means you'll be done with your product selection in less than 2 minutes,
+                middle means 2-5 minutes and long means more than 5 minutes.</p><br>
+            <p>Thank you for your reply, your participation is very important to me. :)</p>
+        </div>
         <div class="container ">
             <div class="contnet">
                 <div id="box">
                 </div>
-                <div id="box2">
-                </div>
             </div>
         </div>
         <div class="flex_right">
-            <button class="sub">Submit</button>
+            <button class="sub">Next</button>
         </div>
     </div>
     <div class="alert">
         <p data-time="long">Long</p>
         <p data-time="middle">Middle</p>
         <p data-time="short">Short</p>
+        <p data-time="remove">Remove</p>
     </div>
     <script src="../js/jq.js"></script>
     <script src="../js/indexblockDrag.min.js"></script>
@@ -81,7 +86,7 @@
     <script src="../layui/layui.js"></script>
     <script type="text/javascript">
         //inital the var of the function
-        var this_em = '', per_em = '', DomPosition = [], info = {}, fDatas = "", step = 0, day='', time='';
+        var this_em = '', per_em = '', DomPosition = [], info = {}, fDatas = "", step = 0, day = '', time = '', empty_block=0;
         //set the block size and the block entry
         var DrageArr = new blockDrag({ block: "(18,18)" }, 'drag99999');
         var blockNum = Number(DrageArr.col) * Number(DrageArr.row);
@@ -94,25 +99,36 @@
         for (var i = 0; i < blockNum; i++) {
             $("<div class='block' style='width:" + DrageArr.set.blockW + "px;height:" + DrageArr.set.blockH + "px'></div>").appendTo($("#box2"));
         };
+
+        //get the posisiton of first map
         GetPosition()
         function GetPosition() {
             getAjax('GetPosition', 'GET', function (res, err) {
                 layer.msg(res.msg, { icon: res.code == 0 ? 1 : 2 });
-                console.log(res.data)
                 let datas = JSON.parse((res.data).replace("/\\/g", ''));
                 let i = 0;
                 DomPosition = [];
                 $('.Wrap').remove();
                 $('.asideitem').removeClass('act');
-                DomPosition = datas;
+                datas.forEach((item, indexs) => {
+                    DomPosition.push(item)
+                })
                 DomPosition.forEach((item, indexs) => {
-                    $('#box').append(`<div class='drag drag${item.boxName.match(/\d+(\.\d+)?/g)[0]}'>${item.soName}</div>`);
-                    new blockDrag({ block: "(18,18)" }, 'drag' + item.boxName.match(/\d+(\.\d+)?/g)[0]);
-                    $('.drag' + item.boxName.match(/\d+(\.\d+)?/g)[0] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
-                    $('.aside' + item.boxName.match(/\d+(\.\d+)?/g)[0]).addClass('act');
+                    if (item.soName != '') {
+                        $('#box').append(`<div class='drag drag${item.boxName.match(/\d+(\.\d+)?/g)[0]}'>${item.soName}</div>`);
+                        new blockDrag({ block: "(18,18)" }, 'drag' + item.boxName.match(/\d+(\.\d+)?/g)[0]);
+                        $('.drag' + item.boxName.match(/\d+(\.\d+)?/g)[0] + 'Wrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
+                        $('.aside' + item.boxName.match(/\d+(\.\d+)?/g)[0]).addClass('act');
+                    } else {
+                        empty_block++
+                        $('#box').append(`<div class='drag drag${empty_block}empty'></div>`);
+                        new blockDrag({ block: "(18,18)" }, 'drag' + empty_block + 'empty');
+                        $('.drag' + empty_block + 'emptyWrap').css({ 'position': 'absolute', 'top': item.pageY <= 0 ? 0 : item.pageY + 'px', 'left': item.pageX <= 0 ? 0 : item.pageX + 'px' });
+                    }
                 })
             })
         };
+
         //preventdefault should be later added after debugging
         document.addEventListener("contextmenu", (event) => {
             event.preventDefault();
@@ -148,14 +164,24 @@
                         });
                         return false;
                     } else {
-                        console.log(info.fData)
-                        if (info.fData.indexOf(per_em) >= 0) {
+                        if (this_em.hasClass('act') && $(this).attr('data-time') != "remove") {
                             layer.msg('You have already been here', { icon: 2 });
                         } else {
-                            info.fData += '(' + per_em + ',' + $(this).attr('data-time') + '),'
-                            this_em.addClass('act');
-                            this_em.append("<span style='font-size:20px;color:#000;position: absolute;left:10px'>" + (step += 1) + "</span>");
-                            layer.msg('Selected', { icon: 1 });
+                            if ($(this).attr('data-time') != "remove") {
+                                info.fData += '(' + per_em + ',' + $(this).attr('data-time') + '),'
+                                this_em.addClass('act');
+                                this_em.append("<span style='font-size:20px;color:#000;position: absolute;left:10px'>" + (step += 1) + "</span>");
+                                layer.msg('Selected', { icon: 1 });
+                            } else {
+                                if (this_em.hasClass('act')) {
+                                    if (this_em.hasClass('act')) {
+                                        this_em.removeClass('act')
+                                        this_em.children().get(this_em.children().length - 1).remove();
+                                        step--
+                                    }
+                                }
+
+                            }
                         };
                         $('.alert').css('display', 'none');
                         e.stopPropagation();
@@ -222,10 +248,10 @@
             });
 
 
+
             //submit
             form.on('submit(addInfo)', function (data) {
                 window.sessionStorage.setItem('age', data.field.age)
-                console.log(data);
                 info = data.field;
                 info.fData = '';
                 layer.closeAll('page');
@@ -239,17 +265,17 @@
                     layer.msg('Please select the shopping order first.', { icon: 2 });
                     return false;
                 }
-                postAjax('insertUserTime', 'POST', info, function (res, err) {
+
+                //parse the data with cookies
+                localStorage.setItem('info', JSON.stringify(info))
+
+
+                /* postAjax('insertUserTime', 'POST', info, function (res, err) {
                     console.log(info);
                     layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
-                })
+                }) */
+                location.href = "/2ndmap"
             })
-        });
-
-
-
-        layui.use('dropdown', function () {
-
         });
     </script>
 </body>

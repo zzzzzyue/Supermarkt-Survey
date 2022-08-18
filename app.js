@@ -11,7 +11,7 @@ var http = require("https");
 const db = require('./db/options')
 
 //use body parser to deal with the post request
-app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.urlencoded({ extended: true }));
 //var urlencodedParser = bodyParser.urlencoded({extended: true});
 //set static version of views
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,8 +32,11 @@ app.all('*', function (req, res, next) {
 const home = require('./route/home');
 const admin = require('./route/admin');
 const login = require('./route/login');
+const sndmap = require('./route/2ndmap');
+const { Console } = require('console');
 
 app.use('/', home);
+app.use('/2ndmap', sndmap);
 app.use('/admin', admin);
 app.use('/login', login);
 
@@ -42,7 +45,7 @@ var server = app.listen(3000, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('Example app listening at localhost:3000', host, port);
+  console.log('App listening at localhost:3000', host, port);
 });
 
 
@@ -56,6 +59,7 @@ var server = app.listen(3000, function () {
 
 //login
 app.post('/login', function (req, res) {
+  console.log(req.body)
   db.selectAll("select * from user_list WHERE username = '" + req.body.username + "' AND password ='" + req.body.password + "' AND state = '1'", (e, r) => {
     let tt = r.length;
     console.log(e);
@@ -95,7 +99,7 @@ app.get('/classList', function (req, res) {
       return false;
     };
     if (!r) {
-      res.send({ code: 400, msg: 'Getting failed'});
+      res.send({ code: 400, msg: 'Getting failed' });
       return false;
     } else {
       countShop('select count(*) from classList', function (re) {
@@ -192,13 +196,36 @@ app.get('/GetPosition', function (req, res) {
 
 });
 
+//get position of 2nd map
+app.get('/GetPosition2', function (req, res) {
+  countShop('select count(*) from positionList2', function (re) {
+    if (re.code != 200) {
+      res.send(re);
+      return false;
+    };
+    db.selectAll("select * from positionList2 WHERE id = " + re.data, (e, r) => {
+      if (e) {
+        res.send({ code: 400, msg: 'Getting failed' });
+        return false;
+      };
+      if (!r) {
+        res.send({ code: 400, msg: 'Getting failed' });
+        return false;
+      } else {
+        res.send({ code: 0, msg: 'Getting successful', data: r[0].data });
+      };
+    })
+  })
+
+});
+
 app.get('/admin/GetCurrent', function (req, res) {
   countShop('select count(*) from positionList', function (re) {
     if (re.code != 200) {
       res.send(re);
       return false;
     };
-    console.log(res);
+    //console.log(res);
     db.selectAll("select * from positionList WHERE id = " + re.data, (e, r) => {
       if (e) {
         res.send({ code: 400, msg: 'Getting failed' });
@@ -221,7 +248,7 @@ app.get('/admin/GetCurrent2', function (req, res) {
       return false;
     };
     db.selectAll("select * from positionList2 WHERE id = " + re.data, (e, r) => {
-      console.log(re.data)
+      //console.log(re.data)
       if (e) {
         res.send({ code: 400, msg: 'Getting failed' });
         return false;
@@ -332,3 +359,21 @@ app.post('/admin/delUserTime', function (req, res) {
     };
   })
 })
+
+//get data for the diagramm
+app.post('/admin/getDayAndTime', function (req, res) {
+  var dayList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  var timeList = ["Morning(07AM--11AM)", "Noon(11AM--15PM)", "Afternoon(15PM--19PM)", "Evening(19PM--22PM)"]
+  db.selectAll("select * from userTime WHERE day = '" + dayList[req.body.day] + "' AND time ='" + timeList[req.body.time] + "' ORDER BY id ", (e, r) => {
+    let tt = r.length;
+    //console.log(e);
+    if (e) {
+      res.send({ code: 400, msg: 'Getting failed' });
+    };
+    if (r.length == 0) {
+      res.send({ code: 400, msg: 'No Results' });
+    } else {
+      res.send({ code: 200, msg: 'Getting successful', data: r });
+    };
+  })
+});

@@ -1,4 +1,5 @@
 function postAjax(url,type,data,callback){
+    console.log(data)
     $.ajax({
         url: url,
         type: type, 
@@ -9,7 +10,6 @@ function postAjax(url,type,data,callback){
             // layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 })
         },
         error: function (err) {
-            console.log(err)
             callback({code:500,data:[],msg:'Error'})
         }
     })

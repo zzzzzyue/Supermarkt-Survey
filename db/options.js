@@ -4,7 +4,6 @@ const connection = conn();
 //search all the sql data
 let selectAll = (sql, callback) => {
   console.log(sql);
-  
   connection.query(sql, (err, result) => {
     if (err) {
       console.log('Error-', err.sqlMessage);
