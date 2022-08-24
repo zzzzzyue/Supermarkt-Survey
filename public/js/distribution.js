@@ -82,6 +82,7 @@ function GetCurrentMap2() {
     })
 };
 
+
 //fill the block with color
 
 
@@ -89,6 +90,7 @@ function getDiagramm(data, map) {
     var areaSeq = []
     var sortedSeq = new Map()
     var sortedTime = new Map()
+    var userTimeline = []
     if (map == 1) {
         for (let i = 0; i < data.length; i++) {
             areaSeq.push(data[i].fData)
@@ -96,6 +98,7 @@ function getDiagramm(data, map) {
         for (let i = 0; i < areaSeq.length; i++) {
             //clean up areaSeq[i]
             var mapedArr = cleanUpArr(areaSeq[i].split(','))
+
             for (let j = 0; j < mapedArr.length; j++) {
                 let tmpName = mapedArr[j].name
                 let tmpTime = mapedArr[j].stay
@@ -103,15 +106,41 @@ function getDiagramm(data, map) {
                     var tmp_num = sortedSeq.get(tmpName)
                     sortedSeq.set(tmpName, tmp_num + 1)
                 } else {
-
                     sortedSeq.set(tmpName, 1)
                     sortedTime.set(tmpName, 0)
                 }
+
+                // set the time of each stay
+                if (tmpTime == "long") {
+                    mapedArr[j].stay = 5
+                } else if (tmpTime == "middle") {
+                    mapedArr[j].stay = 3
+                } else {
+                    mapedArr[j].stay = 1
+                }
+
             }
+
+            for (let j = 0; j < mapedArr.length; j++) {
+                if (j == 0) {
+                    mapedArr[j].distance = 0
+                } else {
+                    mapedArr[j].distance = getDistance(mapedArr[j].name, mapedArr[j - 1].name)
+                }
+
+            }
+            userTimeline.push(mapedArr)
+
         }
+
+        chartTimeLine = calTimeLine(userTimeline)
+        for (let [key, value] of chartTimeLine.entries()) {
+            chartTimeLine.set(key, cleanMatrix(value))
+        }
+        //supermktTimeLine = cleanMatrix(supermktTimeLine)
+
+
         sortedSeq.forEach((value, key) => {
-            console.log(value)
-            console.log(key)
             const high = 5;
             const middle = 3;
             const low = 1
@@ -127,15 +156,106 @@ function getDiagramm(data, map) {
             }
         })
 
-
-
-
     } else {
         for (var i = 0; i < data.length; i++) {
             areaSeq.push(data[i].fData2)
         }
     }
 }
+
+
+//get the distance of the two block
+function getDistance(name1, name2) {
+    let x1, y1, x2, y2;
+    let pattern = /[/\s]/g
+    if(DomPosition.length != 0){
+        DomPosition.forEach(item => {
+            if (item.soName.replace(pattern, "") == name1) {
+                x1 = item.pageX
+                y1 = item.pageY
+            }
+            if (item.soName.replace(pattern, "") == name2) {
+                x2 = item.pageX
+                y2 = item.pageY
+            }
+        })
+    } else {
+        DomPosition2.forEach(item => {
+            if (item.soName.replace(pattern, "") == name1) {
+                x1 = item.pageX
+                y1 = item.pageY
+            }
+            if (item.soName.replace(pattern, "") == name2) {
+                x2 = item.pageX
+                y2 = item.pageY
+            }
+        })
+    }
+    
+
+    return Math.abs(x1 - x2) / 60 + Math.abs(y1 - y2) / 40
+
+}
+
+
+function calTimeLine(arr) {
+    let res = new Map()
+    arr.forEach(item => {
+        console.log(item)
+        let maxtime = 0
+        for (let j = 0; j < item.length; j++) {
+            let cost = 0;
+            maxtime += item[j].stay + item[j].distance
+            cost = maxtime - item[j].stay
+            var area = item[j].name
+            // push into the supermkt time line
+            if (res.has(area)) {
+                let tmpMatrix = res.get(area)
+                let tmp = tmpMatrix.length
+                tmpMatrix[tmp] = Array(maxtime).fill(0)
+                for (let k = cost; k < tmpMatrix[tmp].length; k++) {
+                    tmpMatrix[tmp][k] = 1
+                }
+                res.set(area, tmpMatrix)
+            } else {
+                let matrix = []
+                matrix[0] = Array(maxtime).fill(0)
+                for (let k = cost; k < matrix[0].length; k++) {
+                    matrix[0][k] = 1
+                }
+                res.set(area, matrix)
+            }
+        }
+    })
+
+    return res
+}
+
+function cleanMatrix(m) {
+    let tmpLength = 0;
+    let tmpSum = []
+    for (let i = 0; i < m.length; i++) {
+        if (m[i].length > tmpLength) {
+            tmpLength = m[i].length
+        }
+    }
+    m.forEach(item => {
+        for (let i = item.length; i < tmpLength; i++) {
+            item[i] = 0
+        }
+        tmpSum.push(item)
+    })
+
+    let sum = new Array(tmpLength).fill(0)
+    for (let k = 0; k < tmpLength; k++) {
+        for (let q = 0; q < tmpSum.length; q++) {
+            sum[k] = sum[k] + tmpSum[q][k]
+        }
+    }
+
+    return sum
+}
+
 
 function cleanUpArr(arr) {
     const regex = /[^A-Za-z]/g;
@@ -202,4 +322,39 @@ function fillColor(block_name, status_code) {
     }
 
 
+}
+
+
+function getCharts() {
+    var myChart = echarts.init(document.getElementById('mychart'));
+    option = {
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            interval: 1,
+            min: 0,
+            max: 36
+        },
+        yAxis: {
+            type: 'value',
+            interval: 1,
+            min: 0,
+            max: 5
+        },
+        series: [
+            {
+                name: 'Map2',
+                type: 'bar',
+                step: 'Map1',
+                data: chartTimeLine.get("Fruit")
+            }
+        ]
+    };
+
+    myChart.setOption(option);
 }

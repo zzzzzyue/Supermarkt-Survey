@@ -108,6 +108,7 @@
                         </div>
                     </div>
                 </div>
+                <div id="mychart" style="width: 800px;height:600px;"></div>
             </div>
         </div>
     </div>
@@ -119,6 +120,7 @@
     <script src="../layui/layui.js"></script>
     <script src="../js/ajax.js"></script>
     <script src="../js/distribution.js"></script>
+    <script src="../js/echarts.js"></script>
     <script type="text/javascript">
         var this_em = '', per_em = '', DomPosition = [], info = {}, fDatas = "", step = 0, day = '', time = '', empty_block = 0;
         var coordinate = [];
@@ -143,9 +145,7 @@
             let dom_child = dom_parent.childNodes
             for (let i = dom_child.length - 1; i >= 0; i--) {
                 let reg = RegExp(/status/)
-                console.log(dom_child[i].className)
                 if (reg.exec(dom_child[i].className)) {
-                    console.log("hello")
                     dom_parent.removeChild(dom_child[i])
                 }
             }
@@ -159,8 +159,8 @@
                 removeAll()
                 postAjax('getDayAndTime', 'POST', data.field, (res) => {
                     layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
-                    console.log(res.data)
                     getDiagramm(res.data, 1)
+                    getCharts()
                 })
                 return false
             })

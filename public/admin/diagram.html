@@ -41,6 +41,10 @@
         .color-cube {
             margin-bottom: 10px;
         }
+
+        #mychart {
+            margin-top: 50px;
+        }
     </style>
 </head>
 
@@ -110,6 +114,8 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="mychart" style="width: 800px;height:600px;"></div>
             </div>
         </div>
     </div>
@@ -121,11 +127,15 @@
     <script src="../layui/layui.js"></script>
     <script src="../js/ajax.js"></script>
     <script src="../js/distribution.js"></script>
+    <script src="../js/echarts.js"></script>
     <script type="text/javascript">
+
         var this_em = '', per_em = '', DomPosition = [], info = {}, fDatas = "", step = 0, day = '', time = '', empty_block = 0;
         var coordinate = [];
         var DomPosition2 = []
         var diagram_result = [];
+        var timeLine = [];
+        var chartTimeLine = new Map;
         var dayList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         var timeList = ["Morning(07AM--11AM)", "Noon(11AM--15PM)", "Afternoon(15PM--19PM)", "Evening(19PM--22PM)"]
         //set the block size and the block entry
@@ -150,9 +160,7 @@
             let dom_child = dom_parent.childNodes
             for (let i = dom_child.length - 1; i >= 0; i--) {
                 let reg = RegExp(/status/)
-                console.log(dom_child[i].className)
                 if (reg.exec(dom_child[i].className)) {
-                    console.log("hello")
                     dom_parent.removeChild(dom_child[i])
                 }
             }
@@ -161,19 +169,20 @@
 
         layui.use(['form'], function () {
             var form = layui.form
-
             form.on('submit(submap1)', function (data) {
                 removeAll()
                 postAjax('getDayAndTime', 'POST', data.field, (res) => {
                     layer.msg(res.msg, { icon: res.code == 200 ? 1 : 2 });
-                    console.log(res.data)
                     getDiagramm(res.data, 1)
+                    getCharts()
                 })
                 return false
+                
             })
 
 
         });
+
 
     </script>
 </body>
